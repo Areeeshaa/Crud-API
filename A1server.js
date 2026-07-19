@@ -1,7 +1,10 @@
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./openapi.json");
 const express = require('express')
 const app = express()
 app.use(express.json())
 let tasks = [{id:1, title:"OOP", done:true}, {id:2, title:"DSA", done:true}, {id:3, title:"PF", done:false}]
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/',(req,res)=>{
     res.send("Hello world")
 
@@ -62,9 +65,7 @@ app.put('/tasks/:id', (req, res)=>{
 })
 app.delete('/tasks/:id', (req, res) => {
     const id = req.params.id;
-
     const index = tasks.findIndex(task => task.id == id);
-
     if (index === -1) {
         return res.status(404).send("Unknown id");
     }
