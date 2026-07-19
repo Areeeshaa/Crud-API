@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-let tasks = [{id:1, title:"OOP", done:true}, {id:2, title:"DSA", done:true}, {id:1, title:"PF", done:false}]
+app.use(express.json())
+let tasks = [{id:1, title:"OOP", done:true}, {id:2, title:"DSA", done:true}, {id:3, title:"PF", done:false}]
 app.get('/',(req,res)=>{
     res.send("Hello world")
 
@@ -23,6 +24,21 @@ app.get('/tasks/:id', (req,res)=>{
         res.status(404).send("Task not found!")
     }
 
+})
+app.post('/tasks', (req, res)=>{
+    const task = {}
+    if(!req.body.title){
+        return res.status(400).send("Title is required")
+    }
+    if(!req.body.id){
+        task.id = tasks.length+1
+    }
+    if (!req.body.done){
+        task.done=false
+    }
+    task.title = req.body.title
+    tasks.push(task)
+    res.status(201).json(task)
 })
 app.get('/health', (req,res)=>{
      res.send({ "status": "ok" } )
