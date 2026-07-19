@@ -40,6 +40,37 @@ app.post('/tasks', (req, res)=>{
     tasks.push(task)
     res.status(201).json(task)
 })
+app.put('/tasks/:id', (req, res)=>{
+    task = tasks.find(task=>task.id == req.params.id)
+    if(!task){
+       return res.status(404).send("Unknown id")
+    }
+    if((req.body.title) && (req.body.done!==undefined)){
+        task.title= req.body.title;
+        task.done = req.body.done;
+    }
+    else if(req.body.title){
+        task.title= req.body.title;
+    }
+    else if(req.body.done!== undefined){
+        task.done = req.body.done;
+    }
+    else{
+       return res.status(400).send("Bad request")
+    }
+    return res.send(task)
+})
+app.delete('/tasks/:id', (req, res) => {
+    const id = req.params.id;
+
+    const index = tasks.findIndex(task => task.id == id);
+
+    if (index === -1) {
+        return res.status(404).send("Unknown id");
+    }
+    const deletedTask = tasks.splice(index, 1);
+    res.status(204).send(deletedTask[0]);
+});
 app.get('/health', (req,res)=>{
      res.send({ "status": "ok" } )
 })
